@@ -5,7 +5,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Miracle TP On-boarding</title>
+        <title>Miracle TP On-boarding portal</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
         <meta http-equiv="pragma" content="no-cache" />
         <meta http-equiv="cache-control" content="no-cache" />
@@ -25,40 +25,41 @@
         <script>
             function doOnLoad()
             {
-                $("#partnersList").addClass("active");
+                $("#tpoUsersList").addClass("active");
             }
         </script>
     </head>
     <body class="home" onload="doOnLoad()">
         <div>
             <s:include value="../includes/template/header.jsp"/>
-        </div> 
+        </div>
         <header id="head">
             <div class="container">
-                <h3><b>Partners</b></h3>
+                <h3><b>Users Search</b></h3>
             </div>
         </header>     
         <div class="container">
-            <s:form action="searchPartner" method="POST" enctype="multipart/form-data" name="searchPartner" id="searchPartner" theme="simple">
+            <s:form action="SearchUser" method="POST" enctype="multipart/form-data" name="searchUser" id="tposearchUser" theme="simple">
                 <div id="site_content" class="jumbotron">
                     <div class="container">
                         <div class="row">
                             <div class="col-sm-3">
                                 <div class="form-group">
-                                    <label>Partner Name</label>
-                                    <s:textfield cssClass="form-control"  name="partnerName" id="partnerName" value="%{partnerName}" placeholder="Partner Name"  tabindex="1"/>
+                                    <label>User Name</label>
+                                    <s:textfield cssClass="form-control"  name="partnerName" id="partnerName" value="%{partnerName}" placeholder="User Name"/>
                                 </div>
-                            </div>
+                            
+                        </div>
                             <div class="col-sm-3">
                                 <div class="form-group">
                                     <label>Country</label>
-                                    <s:select cssClass="form-control" headerKey="-1" headerValue="-- Select --" list="#@java.util.LinkedHashMap@{'US':'USA','IN':'India','CN':'Canada','UK':'United Kingdom'}" name="country" id="country" value="%{country}"  tabindex="2"/>
+                                    <s:select cssClass="form-control" headerKey="-1" headerValue="-- Select --" list="#@java.util.LinkedHashMap@{'US':'USA','IN':'India','CN':'Canada','UK':'United Kingdom'}" name="country" id="country" value="%{country}" />
                                 </div>
                             </div>
                             <div class="col-sm-3">
                                 <div class="form-group">
                                     <label>Status</label>
-                                    <s:select cssClass="form-control" headerKey="-1" headerValue="-- Select --" list="#@java.util.LinkedHashMap@{'INACTIVE':'INACTIVE','ACTIVE':'ACTIVE','REJECTED':'REJECTED'}" name="status" id="status" value="%{status}"   tabindex="3"/>
+                                    <s:select cssClass="form-control" headerKey="-1" headerValue="-- Select --" list="#@java.util.LinkedHashMap@{'I':'INACTIVE','A':'ACTIVE','R':'REJECTED'}" name="status" id="status" value="%{status}" />
                                 </div>
                             </div>
                         </div>
@@ -68,7 +69,7 @@
                                     <s:submit value="Search" cssClass="btn btn-primary pull-right" tabindex="4"/>
                                 </div>
                                 <div class="col-sm-1 pull-right">
-                                    <input type="button" value="Reset" tabindex="5" class="btn btn-primary pull-right" onclick="resetValues();"/>
+                                    <s:reset value="Reset" cssClass="btn btn-primary pull-right" tabindex="3" />
                                 </div>
                             </div>
                         </div>
@@ -80,7 +81,7 @@
             <div id="site_content" class="jumbotron">
                 <div class="container">
                     <center><div id="resultMsg"></div></center>
-                        <s:if test="#session.tpoSearchPartnersList != null"> 
+                    <s:if test="#session.tpoSearchPartnersList != null">
                         <table id="partnersTable" name="partnersTable" class="table table-bordered table-hover">
                             <thead>
                             <th>NAME</th>
@@ -105,11 +106,14 @@
                                 %>
                                 <tr>
                                     <td>
-                                        <%
+                                      
+                                         <%
                                             out.println(tpOnboardingBean.getPartnerName());
                                         %>
-                                    </td>
-                                    <td>
+
+                                        </td>
+
+                                        <td>
                                         <%
                                             out.println(tpOnboardingBean.getPhoneNo());
                                         %>
@@ -131,88 +135,56 @@
                                     </td>
                                     <td>
                                         <%
-                                            if (tpOnboardingBean.getStatus().equalsIgnoreCase("REJECTED")) {
-                                                out.println("<font color='red'>" + tpOnboardingBean.getStatus() + "</font>");
-                                            } else if (tpOnboardingBean.getStatus().equalsIgnoreCase("ACTIVE")) {
-                                                out.println("<font color='green'>" + tpOnboardingBean.getStatus() + "</font>");
-                                            } else {
-                                                out.println("<font color='orange'>" + tpOnboardingBean.getStatus() + "</font>");
+                                            if (tpOnboardingBean.getStatus().equalsIgnoreCase("I")) {
+                                                out.println("<font color='red'>INACTIVE</font>");
+                                            } else if (tpOnboardingBean.getStatus().equalsIgnoreCase("A")) {
+                                                out.println("<font color='green'>ACTIVE</font>");
                                             }
+//                                            } else {
+//                                                out.println("<font color='orange'>INACTIVE</font>");
+//                                            }
                                             //out.println(tpOnboardingBean.getStatus());
                                         %>
                                     </td>
                                     <td align="center">
                                         <%
-                                            if (tpOnboardingBean.getStatus().equalsIgnoreCase("ACTIVE")) {
+                                            if (tpOnboardingBean.getStatus().equalsIgnoreCase("A")) {
                                         %>
                                         <a style="disable:true;color:#d4cecd;"><span class="glyphicon glyphicon-ok-sign"></span></a>
-                                            <% } else {
-                                            %>  
-                                        <a style="color: green;" href='javascript:getPartnerName("<%=loginId%>","<%=roleId%>","<%=id%>","<%=(tpOnboardingBean.getPartnerName())%>")' id="acceptButton" ><span class="glyphicon glyphicon-ok-sign"></span></a>
-                                            <%  }
-                                            %>
+                                        <% } else {
+                                        %>  
+                                        <a style="color: green;" href='javascript:UserAccept("<%=id%>","<%=(tpOnboardingBean.getPartnerName())%>")' id="acceptButton" ><span class="glyphicon glyphicon-ok-sign"></span></a>
+                                        <%  }
+                                        %>
                                     </td>
-                                    <td align="center">
+                                     <td align="center">
                                         <%
-                                            if (tpOnboardingBean.getStatus().equalsIgnoreCase("REJECTED")) {
+                                            if (tpOnboardingBean.getStatus().equalsIgnoreCase("I")) {
                                         %>
                                         <a style="disable:true;color:#d4cecd;"><span class="glyphicon glyphicon-remove-sign"></span></a>
                                             <% } else {
                                             %>  
-                                        <a style="color: red" href='javascript:partnerReject("<%=id%>","<%=(tpOnboardingBean.getPartnerName())%>")'><span class="glyphicon glyphicon-remove-sign"></span></a>
+                                        <a style="color: red" href='javascript:userReject("<%=id%>","<%=(tpOnboardingBean.getPartnerName())%>")'><span class="glyphicon glyphicon-remove-sign"></span></a>
                                             <%  }
                                             %>
                                     </td>
-                                   
+
+                                    
                                 </tr>
-                                <%
-                                        }
+                                <%}
+
                                     }%>
+
                             </tbody>
                         </table>
-                    </s:if> 
+
+                    </s:if>
                 </div>
             </div>
         </div>
-        <div class="modal fade" id="myModal" data-backdrop="static" data-keyword="false" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header"  style="border:0">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="backToPartnerList()"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="myModalLabel">Do you want Accept partner ?</h4>
-                    </div>
-                    <div class="modal-body" style="margin-top: -15px; margin-bottom: -25px;">
-                        <input type="hidden" id="partnerId" name="partnerId"/>
-                        <input type="hidden" id="roleId" name="roleId"/>
-                        <input type="hidden" id="loginId" name="loginId"/>
-                        <center><div id="loadingImage"></div>
+        <div>
+             <center><div id="loadingImage"></div>
                             <div id="tpResultMessage"></div></center>
-                        <div class="row">   
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label>Partner Name<span class="text-danger">*</span></label>
-                                    <s:textfield cssClass="form-control"  name="addpartnerName" id="addpartnerName" readonly="true"/>
-                                </div>
-                            </div>
-                            <s:if test="#session.tpoRoleId == 1">
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label>Assign To<span class="text-danger">*</span></label>
-                                        <s:select headerKey="-1" headerValue="--select--" cssClass="form-control" list="adminUsersList" name="adminUsersList" id="adminUsersList" />
-                                    </div>
-                                </div>
-                            </s:if>
-                        </div>  
-                        <div class="modal-footer" style="border:0;margin:0">
-                            <div class="row">
-                                <div class="col-md-12" style="margin-bottom:8px">
-                                    <div class="col-md-2 pull-right"><input type="button" id="accept" value="Submit" class="btn btn-primary" onclick="acceptPartner();"/></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </body>
     <footer class="footer">
@@ -227,34 +199,21 @@
     <script src='<s:url value="../includes/plugins/datatables/jquery.dataTables.min.js"/>'></script>
     <script src='<s:url value="../includes/plugins/datatables/dataTables.bootstrap.min.js"/>'></script>
     <script>
-                                        $(function () {
-                                            $('#partnersTable').DataTable({
-                                                "paging": true,
-                                                "lengthChange": true,
-                                                "searching": true,
-                                                "ordering": true,
-                                                "info": true,
-                                                "autoWidth": false
-                                            });
-                                        });
-
-                                        $("#acceptButton").click(function () {
-                                            $('#myModal').modal('show');
-                                        });
-
-                                        function getPartnerName(loginId, roleId, pId, pName) {
-                                            document.getElementById("loginId").value = loginId;
-                                            document.getElementById("roleId").value = roleId;
-                                            document.getElementById('partnerId').value = pId;
-                                            document.getElementById("addpartnerName").value = pName;
-                                            $("#myModal").modal("show");
-                                        }
-
-                                        function backToPartnerList() {
-                                            window.location = "../tpOnboarding/tpoPartnersList.action";
-                                        }
-
-                                        function resetValues() {
+        $(function () {
+            $('#partnersTable').DataTable({
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false
+            });
+        });
+        
+      
+    
+       
+                                         function reset() {
                                             document.getElementById("partnerName").value = "";
                                             document.getElementById("country").value = "-1";
                                             document.getElementById("status").value = "-1";

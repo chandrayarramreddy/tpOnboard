@@ -432,6 +432,47 @@ public class AjaxHandlerAction extends ActionSupport implements ServletRequestAw
         }
         return null;
     }
+    
+    
+    
+    
+    public String RejectUser() {
+        if (httpServletRequest.getSession(false).getAttribute(AppConstants.TPO_LOGIN_ID).toString() != null) {
+            try {
+                String loginId = httpServletRequest.getSession(false).getAttribute(AppConstants.TPO_LOGIN_ID).toString();
+                responseString = ServiceLocator.getAjaxHandlerService().RejectUser(loginId, getId());
+              
+                httpServletResponse.setContentType("text/xml");
+                httpServletResponse.getWriter().write(responseString);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return null;
+    }
+    
+    
+    
+    
+    public String AcceptUser() {
+        if (httpServletRequest.getSession(false).getAttribute(AppConstants.TPO_LOGIN_ID).toString() != null) {
+            try {
+                String loginId = httpServletRequest.getSession(false).getAttribute(AppConstants.TPO_LOGIN_ID).toString();
+                responseString = ServiceLocator.getAjaxHandlerService().AcceptUser(loginId, getId());
+              
+                httpServletResponse.setContentType("text/xml");
+                httpServletResponse.getWriter().write(responseString);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return null;
+    }
+    
+    
+    
+    
+    
 
     public String testconnectionstatus() {
         if (httpServletRequest.getSession(false).getAttribute(AppConstants.TPO_LOGIN_ID).toString() != null) {

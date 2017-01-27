@@ -18,6 +18,10 @@ public interface TpOnboardingService {
     public String updatePartnerInfo(TpOnboardingAction tpAction, String loginId, int partnerId) throws ServiceLocatorException;
 
     public ArrayList<TpOnboardingBean> tpoSearchPartners(String loginId, int roleId, String flag, TpOnboardingAction tpAction);
+    
+    public ArrayList<TpOnboardingBean> tpoSearchUser(String loginId, int roleId, String flag, TpOnboardingAction tpAction);
+            
+    public ArrayList<TpOnboardingBean> tpoUserlist(String loginId);
 
     public ArrayList<TpOnboardingBean> tpoSearchProfile(String loginId, int partnerId, String flag, TpOnboardingAction tpAction);
 

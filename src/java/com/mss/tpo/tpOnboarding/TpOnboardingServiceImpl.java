@@ -1312,7 +1312,9 @@ public class TpOnboardingServiceImpl implements TpOnboardingService {
         }
         return tpOnboardingBean;
     }
-
+//Reset My Password//
+    
+    
     public String doResetMyPassword(int roleId, String loginId, String pwd) throws ServiceLocatorException {
         int istpoMyPwdUpdated = 0;
         Timestamp curdate = DateUtility.getInstance().getCurrentDB2Timestamp();
@@ -1328,6 +1330,13 @@ public class TpOnboardingServiceImpl implements TpOnboardingService {
             preparedStatement.setInt(5, roleId);
             istpoMyPwdUpdated = istpoMyPwdUpdated + preparedStatement.executeUpdate();
             if (istpoMyPwdUpdated > 0) {
+                System.out.println("login ig is " + loginId);
+                String selectQuery = ("SELECT EMAIL FROM MSCVP.TPO_USER WHERE LOGINID='" + loginId + "'");
+
+                preparedStatement = connection.prepareStatement(selectQuery);
+                ResultSet resultSet = preparedStatement.executeQuery();
+                resultSet.next();
+                MailManager.sendTpoPwd(loginId, resultSet.getString("EMAIL"), pwd);
                 responseString = "<font color='green'>Your password updated successfully</font>";
             } else {
                 responseString = "<font color='red'>Please try again!</font>";
@@ -1351,6 +1360,8 @@ public class TpOnboardingServiceImpl implements TpOnboardingService {
         }
         return responseString;
     }
+
+
 
     public String doTpoResetUserPwd(String loginId, String userLoginId, String pwd) throws ServiceLocatorException {
         int istpoUserPwdUpdated = 0;
@@ -1463,4 +1474,79 @@ public class TpOnboardingServiceImpl implements TpOnboardingService {
         }
         return responseString;
     }
-}
+
+    @Override
+    public ArrayList<TpOnboardingBean> tpoSearchUser(String loginId, int roleId, String flag, TpOnboardingAction tpAction) {
+        StringBuffer partnerSearchQuery = new StringBuffer();
+      //  partnerSearchQuery.append("SELECT NAME, PHONE_NO,COUNTRY,CREATED_BY, CREATED_TS,ACTIVE FROM MSCVP.TPO_USER WHERE CREATED_BY='"+loginId+"' ");
+        partnerSearchQuery.append("SELECT NAME, PHONE_NO,COUNTRY,CREATED_BY, CREATED_TS,ACTIVE FROM MSCVP.TPO_USER WHERE WHERE 2=2 ");
+        if ("searchFlag".equals(flag)) {
+            if (tpAction.getPartnerName() != null && !"".equals(tpAction.getPartnerName().trim())) {
+                partnerSearchQuery.append(" AND lcase(NAME) like lcase('%" + (tpAction.getPartnerName()) + "%') ");
+            }
+            if (tpAction.getCountry() != null && !"-1".equals(tpAction.getCountry().trim())) {
+                partnerSearchQuery.append(" AND COUNTRY='" + tpAction.getCountry() + "' ");
+            }
+            if (tpAction.getStatus() != null && !"-1".equals(tpAction.getStatus().trim())) {
+                partnerSearchQuery.append(" AND STATUS='" + tpAction.getStatus() + "' ");
+            }
+        }
+       if (roleId == 2) {
+            partnerSearchQuery.append(" AND (CREATED_BY='" + loginId + "' OR ASSIGNED_TO = '" + loginId + "') ");
+        }
+        try {
+            connection = ConnectionProvider.getInstance().getConnection();
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery(partnerSearchQuery.toString());
+            tpoSearchPartnersList = new ArrayList<TpOnboardingBean>();
+            while (resultSet.next()) {
+                TpOnboardingBean tpOnboardingBean = new TpOnboardingBean();
+               tpOnboardingBean.setId(resultSet.getInt("ID"));
+                tpOnboardingBean.setPartnerName(resultSet.getString("NAME"));
+                tpOnboardingBean.setPhoneNo(resultSet.getString("PHONE_NO"));
+                tpOnboardingBean.setStatus(resultSet.getString("ACTIVE"));
+                tpOnboardingBean.setCity(resultSet.getString("CITY"));
+                tpOnboardingBean.setState(resultSet.getString("STATE"));
+                tpOnboardingBean.setCountry(resultSet.getString("COUNTRY"));
+                tpOnboardingBean.setZipCode(resultSet.getString("ZIPCODE"));
+                tpOnboardingBean.setCreated_by(resultSet.getString("CREATED_BY"));
+                tpOnboardingBean.setCreated_ts(resultSet.getTimestamp("CREATED_TS"));
+                tpoSearchPartnersList.add(tpOnboardingBean);
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(TpOnboardingServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return tpoSearchPartnersList;
+    }
+
+    @Override
+    public ArrayList<TpOnboardingBean> tpoUserlist(String loginId) {
+        StringBuffer partnerSearchQuery = new StringBuffer();
+        partnerSearchQuery.append("SELECT NAME, PHONE_NO,COUNTRY,CREATED_BY,ID, CREATED_TS,ACTIVE FROM MSCVP.TPO_USER WHERE CREATED_BY='"+loginId+"' ");
+       
+        try {
+            connection = ConnectionProvider.getInstance().getConnection();
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery(partnerSearchQuery.toString());
+            tpoSearchPartnersList = new ArrayList<TpOnboardingBean>();
+            while (resultSet.next()) {
+                TpOnboardingBean tpOnboardingBean = new TpOnboardingBean();
+                
+                tpOnboardingBean.setPartnerName(resultSet.getString("NAME"));
+                tpOnboardingBean.setPhoneNo(resultSet.getString("PHONE_NO"));
+                tpOnboardingBean.setStatus(resultSet.getString("ACTIVE"));
+                
+                tpOnboardingBean.setCountry(resultSet.getString("COUNTRY"));
+                
+                tpOnboardingBean.setCreated_by(resultSet.getString("CREATED_BY"));
+                tpOnboardingBean.setId(Integer.parseInt(resultSet.getString("ID")));
+                tpOnboardingBean.setCreated_ts(resultSet.getTimestamp("CREATED_TS"));
+                tpoSearchPartnersList.add(tpOnboardingBean);
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(TpOnboardingServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return tpoSearchPartnersList;
+    }
+
+    }

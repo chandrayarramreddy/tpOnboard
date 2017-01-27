@@ -294,6 +294,53 @@ function rejectPartnerResponse(resText) {
     document.getElementById("resultMsg").innerHTML = resText;
 }
 
+
+
+//user reject 
+function userReject(pId, pName) {
+    alert(pId);
+    var release = confirm("Confirm to reject '" + pName + "' User");
+    if (release == true) {
+        var req = getXMLHttpRequest();
+        req.onreadystatechange = readyStateHandlerLoadText(req, rejectPartnerResponse1);
+        var url = "../ajax/RejectUser.action?id=" + pId;
+        alert(url);
+        req.open("GET", url, "true");
+        req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        req.send(null);
+    }
+}
+
+function rejectPartnerResponse1(resText) {
+    window.location = "../tpOnboarding/tpoUsersList.action";
+    document.getElementById("resultMsg").innerHTML = resText;
+}
+
+//UserAccept
+
+function UserAccept(pId, pName) {
+    alert(pId);
+    var release = confirm("Confirm to reject '" + pName + "' User");
+    if (release == true) {
+        var req = getXMLHttpRequest();
+        req.onreadystatechange = readyStateHandlerLoadText(req, rejectPartnerResponse2);
+        var url = "../ajax/AcceptUser.action?id=" + pId;
+        alert(url);
+        req.open("GET", url, "true");
+        req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        req.send(null);
+    }
+}
+
+function rejectPartnerResponse2(resText) {
+    window.location = "../tpOnboarding/tpoUsersList.action";
+    document.getElementById("resultMsg").innerHTML = resText;
+}
+
+
+
+
+
 function testConnectionProfile(i, CommId, protocol, pName) {
     document.getElementById("iValue").value = i;
     var req = getXMLHttpRequest();

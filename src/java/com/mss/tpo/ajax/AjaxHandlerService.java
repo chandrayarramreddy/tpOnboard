@@ -30,6 +30,10 @@ public interface AjaxHandlerService {
     public String doAcceptPartner(String loginId, String assignTo, int partnerId) throws ServiceLocatorException;
 
     public String doRejectPartner(String loginId, int partnerId) throws ServiceLocatorException;
+    
+    public String RejectUser(String loginId, int partnerId) throws ServiceLocatorException;
+    
+    public String AcceptUser(String loginId, int partnerId) throws ServiceLocatorException;
 
     public String getTestConnecitonStatus(int communicationId, String protocol, String partnerName) throws SecurityException;
 

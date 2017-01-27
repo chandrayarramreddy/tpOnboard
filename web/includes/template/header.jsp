@@ -60,6 +60,14 @@
                                     <li id="userAdd"><a href="<s:url action="tpoUserAdd"/>">Add User</a></li>
                                <%-- <li id="adminUsersList"><a href="<s:url action="tpoAdminUsersList"/>">Users List</a></li>--%>
                                 </s:if>
+                                    
+                                    
+                               <%--user list--%>     
+                                <s:if test='%{#session.tpoRoleId== 1 || #session.tpoRoleId== 2 || #session.tpoRoleId== 3 || #session.tpoRoleId== 4 || #session.tpoRoleId== 5 }'> 
+                                    <li id="tpoUsersList"><a href="<s:url action="tpoUsersList"/>">Users List</a></li>
+                                </s:if>
+                                    
+                                    
                                 <s:if test='%{#session.tpoRoleId== 1 || #session.tpoRoleId== 2}'>
                                     <li id="resetPartnerPwd"><a href="<s:url action="tpoResetPartnerPwd"/>">Reset Partner Pwd</a></li>
                                 </s:if>
